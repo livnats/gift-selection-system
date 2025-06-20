@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>קטלוג מתנות חג - בחירת מתנות לעובדים</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .header { text-align: center; color: white; margin-bottom: 40px; padding: 20px; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+        .header p { font-size: 1.2rem; opacity: 0.9; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .catalog-item { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; position: relative; }
+        .catalog-item:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
+        .catalog-item-header { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 20px; text-align: center; position: relative; }
+        .catalog-item-header::before { content: '🎁'; font-size: 1.5rem; position: absolute; top: 10px; right: 15px; opacity: 0.8; }
+        .catalog-item-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+        .catalog-item-subtitle { font-size: 0.9rem; opacity: 0.9; font-weight: 300; }
+        .catalog-item-content { padding: 20px; }
+        .catalog-item-image { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .catalog-item-description { color: #555; line-height: 1.5; margin-bottom: 15px; font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .catalog-item-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .catalog-item-price { background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; padding: 8px 15px; border-radius: 20px; font-weight: 700; font-size: 1rem; }
+        .catalog-item-availability { background: #2ecc71; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
+        .catalog-item-availability.out-of-stock { background: #e74c3c; }
+        .view-details-btn { display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: 600; text-align: center; transition: all 0.3s ease; margin-top: 15px; width: 100%; }
+        .view-details-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
+        @media (max-width: 768px) { .catalog-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 10px; } .header h1 { font-size: 2rem; } .header p { font-size: 1rem; } }
+        @media (max-width: 480px) { body { padding: 10px; } .catalog-grid { grid-template-columns: 1fr; gap: 15px; } .header h1 { font-size: 1.8rem; } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .catalog-item { animation: slideInUp 0.6s ease-out; }
+        .catalog-item:nth-child(1) { animation-delay: 0.1s; }
+        .catalog-item:nth-child(2) { animation-delay: 0.2s; }
+        .catalog-item:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎁 קטלוג מתנות חג</h1>
+        <p>בחרו מתנה מושלמת לעובדים שלכם</p>
+    </div>
+    <div class="catalog-grid">
+        <div class="catalog-item" onclick="window.location.href='gift_1.html'">
+            <div class="catalog-item-header">
+                <h2 class="catalog-item-title">שעון חכם מתקדם</h2>
+                <p class="catalog-item-subtitle">חוויית טכנולוגיה מתקדמת</p>
+            </div>
+            <div class="catalog-item-content">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=200&fit=crop" alt="שעון חכם מתקדם" class="catalog-item-image">
+                <p class="catalog-item-description">שעון חכם עם מעקב בריאות מתקדם, GPS מובנה, וסוללה של 7 ימים. כולל מעקב דופק, איכות שינה, ונוטיפיקציות חכמות. מושלם לספורטאים ואנשים פעילים.</p>
+                <div class="catalog-item-footer">
+                    <div class="catalog-item-price">₪1299.99</div>
+                    <div class="catalog-item-availability ">במלאי</div>
+                </div>
+                <a href="gift_1.html" class="view-details-btn">צפה בפרטים מלאים</a>
+            </div>
+        </div>
+        <div class="catalog-item" onclick="window.location.href='gift_2.html'">
+            <div class="catalog-item-header">
+                <h2 class="catalog-item-title">אוזניות אלחוטיות פרימיום</h2>
+                <p class="catalog-item-subtitle">חוויית שמע באיכות גבוהה</p>
+            </div>
+            <div class="catalog-item-content">
+                <img src="https://galtex.co.il/wp-content/uploads/2022/02/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%9C%D7%90-%D7%A9%D7%9D-3.d110a0.webp" alt="אוזניות אלחוטיות פרימיום" class="catalog-item-image">
+                <p class="catalog-item-description">חווה צליל צלול עם אוזניות אלחוטיות פרימיום אלו. כולל ביטול רעשים, סוללה של 30 שעות, ונוחות פרימיום למשחק ממושך. מושלם לחובבי מוזיקה ואנשי מקצוע כאחד.</p>
+                <div class="catalog-item-footer">
+                    <div class="catalog-item-price">₪899.99</div>
+                    <div class="catalog-item-availability ">במלאי</div>
+                </div>
+                <a href="gift_2.html" class="view-details-btn">צפה בפרטים מלאים</a>
+            </div>
+        </div>
+        <div class="catalog-item" onclick="window.location.href='gift_3.html'">
+            <div class="catalog-item-header">
+                <h2 class="catalog-item-title">מחשב נייד אולטרה-קל</h2>
+                <p class="catalog-item-subtitle">ביצועים וניידות מושלמים</p>
+            </div>
+            <div class="catalog-item-content">
+                <img src="₪3499.99" alt="מחשב נייד אולטרה-קל" class="catalog-item-image">
+                <p class="catalog-item-description">מחשב נייד אולטרה-קל במשקל 1.2 קג בלבד. מעבד Intel i7</p>
+                <div class="catalog-item-footer">
+                    <div class="catalog-item-price"> 16GB RAM</div>
+                    <div class="catalog-item-availability "> SSD 512GB</div>
+                </div>
+                <a href="gift_3.html" class="view-details-btn">צפה בפרטים מלאים</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.catalog-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'A') {
+                    const link = this.querySelector('.view-details-btn');
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
