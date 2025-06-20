@@ -91,9 +91,9 @@
     <script>
         // Check authentication
         window.addEventListener('load', function() {
-            const userData = localStorage.getItem('userData');
-            if (!userData) {
-                window.location.href = 'login.html';
+            const employeeId = localStorage.getItem('employeeId');
+            if (!employeeId) {
+                window.location.href = 'cover.html';
                 return;
             }
         });
@@ -121,18 +121,52 @@
                 selectionTime: new Date().toISOString()
             };
 
-            // Store selection in localStorage
-            localStorage.setItem('selectedGift', JSON.stringify(giftData));
+            // Show loading state
+            const selectBtn = document.getElementById('selectBtn');
+            selectBtn.disabled = true;
+            selectBtn.textContent = 'שולח...';
 
-            // Show success message
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('selectBtn').disabled = true;
-            document.getElementById('selectBtn').textContent = 'נבחר ✓';
-
-            // Redirect to selection page after delay
-            setTimeout(() => {
-                window.location.href = 'selection.html';
-            }, 2000);
+            // Send to backend service
+            fetch('http://localhost:5000/api/select-gift', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(giftData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Store selection in localStorage as backup
+                    localStorage.setItem('selectedGift', JSON.stringify(giftData));
+                    
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    selectBtn.textContent = 'נבחר ✓';
+                    
+                    // Redirect to selection page after delay
+                    setTimeout(() => {
+                        window.location.href = 'selection.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving selection:', error);
+                
+                // Fallback: save to localStorage only
+                localStorage.setItem('selectedGift', JSON.stringify(giftData));
+                
+                // Show success message (offline mode)
+                document.getElementById('successMessage').style.display = 'block';
+                selectBtn.textContent = 'נבחר ✓ (מצב לא מקוון)';
+                
+                // Redirect to selection page after delay
+                setTimeout(() => {
+                    window.location.href = 'selection.html';
+                }, 2000);
+            });
         }
     </script>
 </body>

@@ -55,9 +55,9 @@
         });
 
         function checkAuth() {
-            const userData = localStorage.getItem('userData');
-            if (!userData) {
-                window.location.href = 'login.html';
+            const employeeId = localStorage.getItem('employeeId');
+            if (!employeeId) {
+                window.location.href = 'cover.html';
                 return;
             }
         }
