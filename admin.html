@@ -70,6 +70,20 @@
                     <tbody id="giftTableBody">
                     </tbody>
                 </table>
+
+                <h2>רשימת בחירות לפי עובד</h2>
+                <table class="gift-table">
+                    <thead>
+                        <tr>
+                            <th>מספר עובד</th>
+                            <th>מתנה</th>
+                            <th>מחיר</th>
+                            <th>זמן בחירה</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -132,6 +146,22 @@
                 `;
                 tableBody.appendChild(row);
             });
+
+            // Update employee table
+            const employeeTableBody = document.getElementById('employeeTableBody');
+            employeeTableBody.innerHTML = '';
+            if (data.selections && Array.isArray(data.selections)) {
+                data.selections.forEach(sel => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sel.employeeId}</td>
+                        <td>${sel.giftName}</td>
+                        <td>${sel.giftPrice}</td>
+                        <td>${sel.selectionTime ? new Date(sel.selectionTime).toLocaleString('he-IL') : (sel.receivedAt ? new Date(sel.receivedAt).toLocaleString('he-IL') : '')}</td>
+                    `;
+                    employeeTableBody.appendChild(row);
+                });
+            }
         }
     </script>
 </body>

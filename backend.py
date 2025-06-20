@@ -131,6 +131,7 @@ def get_aggregate():
             employee_gifts[employee_id] = {
                 'giftId': gift_id,
                 'giftName': gift_name,
+                'giftPrice': selection['giftPrice'],
                 'selectedAt': selection.get('selectionTime', selection.get('receivedAt'))
             }
         
