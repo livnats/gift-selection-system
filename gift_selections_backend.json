@@ -70,5 +70,14 @@
     "selectionTime": "2025-06-20T17:27:12.182Z",
     "receivedAt": "2025-06-20T20:27:12.188930",
     "id": "selection_20250620_202712_188935"
+  },
+  {
+    "giftId": "3",
+    "giftName": "מחשב נייד אולטרה-קל",
+    "giftPrice": " 16GB RAM",
+    "employeeId": "2",
+    "selectionTime": "2025-06-20T17:33:18.223Z",
+    "receivedAt": "2025-06-20T20:33:18.233804",
+    "id": "selection_20250620_203318_233816"
   }
 ]

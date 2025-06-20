@@ -23,6 +23,8 @@
         .count-badge { background: #667eea; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
         .refresh-btn { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+        .reset-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; }
+        .reset-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3); }
         .loading { text-align: center; padding: 40px; color: #666; }
         .error { background: #fee; color: #e74c3c; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #fcc; }
         @media (max-width: 768px) { .container { margin: 10px; } .content { padding: 20px; } .stats-grid { grid-template-columns: 1fr; } }
@@ -36,7 +38,10 @@
         </div>
         
         <div class="content">
-            <button class="refresh-btn" onclick="loadData()">🔄 רענן נתונים</button>
+            <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="refresh-btn" onclick="loadData()">🔄 רענן נתונים</button>
+                <button class="reset-btn" onclick="resetSelections()">🗑️ אפס בחירות</button>
+            </div>
             
             <div id="loading" class="loading">טוען נתונים...</div>
             <div id="error" class="error" style="display: none;"></div>
@@ -118,6 +123,44 @@
                     error.style.display = 'block';
                     loading.style.display = 'none';
                 });
+        }
+
+        function resetSelections() {
+            if (!confirm('האם אתם בטוחים שברצונכם למחוק את כל בחירות העובדים? פעולה זו אינה הפיכה.')) {
+                return;
+            }
+            
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            
+            loading.style.display = 'block';
+            loading.textContent = 'מאפס בחירות...';
+            error.style.display = 'none';
+
+            fetch('http://localhost:5000/api/reset-selections', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('כל הבחירות אופסו בהצלחה!');
+                    loadData(); // Reload the data to show empty state
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            })
+            .catch(err => {
+                console.error('Error resetting selections:', err);
+                error.textContent = 'שגיאה באיפוס הבחירות. ודאו שהשרת פועל על http://localhost:5000';
+                error.style.display = 'block';
+                loading.style.display = 'none';
+            })
+            .finally(() => {
+                loading.textContent = 'טוען נתונים...';
+            });
         }
 
         function displayData(data) {
