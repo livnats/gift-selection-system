@@ -49,4 +49,9 @@ Thumbs.db
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar 
