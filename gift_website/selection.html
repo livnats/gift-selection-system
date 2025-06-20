@@ -64,16 +64,15 @@
 
         function loadSelection() {
             const selectedGift = localStorage.getItem('selectedGift');
-            const userData = localStorage.getItem('userData');
+            const employeeId = localStorage.getItem('employeeId');
             
-            if (!selectedGift || !userData) {
+            if (!selectedGift || !employeeId) {
                 showNoSelection();
                 return;
             }
 
             try {
                 const gift = JSON.parse(selectedGift);
-                const user = JSON.parse(userData);
                 
                 const selectionDate = new Date(gift.selectionTime).toLocaleString('he-IL');
                 
@@ -90,16 +89,8 @@
                                 <p>${gift.giftPrice}</p>
                             </div>
                             <div class="detail-item">
-                                <h3>שם מלא</h3>
-                                <p>${user.fullName}</p>
-                            </div>
-                            <div class="detail-item">
-                                <h3>אימייל</h3>
-                                <p>${user.email}</p>
-                            </div>
-                            <div class="detail-item">
-                                <h3>כתובת</h3>
-                                <p>${user.address}</p>
+                                <h3>מספר עובד</h3>
+                                <p>${gift.employeeId}</p>
                             </div>
                             <div class="detail-item">
                                 <h3>תאריך בחירה</h3>
@@ -135,9 +126,9 @@
         }
 
         function logout() {
-            localStorage.removeItem('userData');
+            localStorage.removeItem('employeeId');
             localStorage.removeItem('selectedGift');
-            window.location.href = 'login.html';
+            window.location.href = 'cover.html';
         }
     </script>
 </body>

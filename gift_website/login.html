@@ -319,10 +319,15 @@
         
         // Check if user is already logged in
         window.addEventListener('load', function() {
+            // Require employeeId
+            if (!localStorage.getItem('employeeId')) {
+                window.location.href = 'cover.html';
+                return;
+            }
             const userData = localStorage.getItem('userData');
             if (userData) {
                 // User is already logged in, redirect to catalog
-                window.location.href = 'gift_website/index.html';
+                window.location.href = 'index.html';
             }
         });
     </script>

@@ -48,8 +48,8 @@ class GiftWebsiteGenerator:
         """Generate the complete website"""
         os.makedirs(output_dir, exist_ok=True)
         
-        # Copy login page to output directory
-        self.copy_login_page(output_dir)
+        # Copy cover page to output directory
+        self.copy_cover_page(output_dir)
         
         # Generate catalog page
         catalog_html = self.generate_catalog_page()
@@ -70,28 +70,28 @@ class GiftWebsiteGenerator:
         
         print(f"Website generated successfully in '{output_dir}' directory!")
         print("Generated files:")
-        print("  - login.html (user authentication)")
+        print("  - cover.html (employee ID entry)")
         print("  - index.html (catalog page)")
         for gift in self.gifts:
             print(f"  - gift_{gift['id']}.html ({gift['name']})")
         print("  - selection.html (gift selection tracking)")
-        print("\nStart with 'login.html' to access the website.")
+        print("\nStart with 'cover.html' to access the website.")
 
-    def copy_login_page(self, output_dir):
-        """Copy the login page to the output directory"""
-        login_source = "login.html"
-        login_dest = os.path.join(output_dir, "login.html")
+    def copy_cover_page(self, output_dir):
+        """Copy the cover page to the output directory"""
+        cover_source = "cover.html"
+        cover_dest = os.path.join(output_dir, "cover.html")
         
-        if os.path.exists(login_source):
-            with open(login_source, 'r', encoding='utf-8') as src:
+        if os.path.exists(cover_source):
+            with open(cover_source, 'r', encoding='utf-8') as src:
                 content = src.read()
-            with open(login_dest, 'w', encoding='utf-8') as dst:
+            with open(cover_dest, 'w', encoding='utf-8') as dst:
                 dst.write(content)
         else:
-            print(f"Warning: {login_source} not found. Please create it manually.")
+            print(f"Warning: {cover_source} not found. Please create it manually.")
 
     def generate_catalog_page(self):
-        """Generate the main catalog page HTML with authentication check"""
+        """Generate the main catalog page HTML with employee ID check"""
         html = """<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -139,9 +139,9 @@ class GiftWebsiteGenerator:
 </head>
 <body>
     <div id="authError" class="auth-error" style="display: none;">
-        <h2>🔒 נדרשת התחברות</h2>
-        <p>אנא התחברו כדי לצפות בקטלוג המתנות</p>
-        <a href="login.html">לחצו כאן להתחברות</a>
+        <h2>🔒 נדרש מספר עובד</h2>
+        <p>אנא הזינו את מספר העובד שלכם כדי לצפות בקטלוג המתנות</p>
+        <a href="cover.html">לחצו כאן להזנת מספר עובד</a>
     </div>
 
     <div id="mainContent" style="display: none;">
@@ -190,33 +190,28 @@ class GiftWebsiteGenerator:
     </div>
 
     <script>
-        // Check authentication on page load
+        // Check employee ID on page load
         window.addEventListener('load', function() {
-            checkAuth();
+            checkEmployeeId();
         });
 
-        function checkAuth() {
-            const userData = localStorage.getItem('userData');
-            if (!userData) {
+        function checkEmployeeId() {
+            const employeeId = localStorage.getItem('employeeId');
+            if (!employeeId) {
                 document.getElementById('authError').style.display = 'block';
                 document.getElementById('mainContent').style.display = 'none';
                 return;
             }
 
-            try {
-                const user = JSON.parse(userData);
-                document.getElementById('userDetails').textContent = `${user.fullName} (${user.email})`;
-                document.getElementById('authError').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-            } catch (e) {
-                document.getElementById('authError').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'none';
-            }
+            document.getElementById('userDetails').textContent = `מספר עובד: ${employeeId}`;
+            document.getElementById('authError').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
         }
 
         function logout() {
-            localStorage.removeItem('userData');
-            window.location.href = 'login.html';
+            localStorage.removeItem('employeeId');
+            localStorage.removeItem('selectedGift');
+            window.location.href = 'cover.html';
         }
 
         document.querySelectorAll('.catalog-item').forEach(item => {
@@ -358,20 +353,17 @@ class GiftWebsiteGenerator:
         function replaceMainImage(src, alt, element) {{ const mainImage = document.getElementById('mainImage'); mainImage.src = src; mainImage.alt = alt; const galleryImages = document.querySelectorAll('.gallery-image'); galleryImages.forEach(img => {{ if (img === element) {{ img.classList.add('active'); }} else {{ img.classList.remove('active'); }} }}); }}
 
         function selectGift() {{
-            const userData = localStorage.getItem('userData');
-            if (!userData) {{
-                window.location.href = 'login.html';
+            const employeeId = localStorage.getItem('employeeId');
+            if (!employeeId) {{
+                window.location.href = 'cover.html';
                 return;
             }}
 
-            const user = JSON.parse(userData);
             const giftData = {{
                 giftId: '{gift['id']}',
                 giftName: '{gift['name']}',
                 giftPrice: '{gift['price']}',
-                userEmail: user.email,
-                userFullName: user.fullName,
-                userAddress: user.address,
+                employeeId: employeeId,
                 selectionTime: new Date().toISOString()
             }};
 
@@ -462,16 +454,15 @@ class GiftWebsiteGenerator:
 
         function loadSelection() {
             const selectedGift = localStorage.getItem('selectedGift');
-            const userData = localStorage.getItem('userData');
+            const employeeId = localStorage.getItem('employeeId');
             
-            if (!selectedGift || !userData) {
+            if (!selectedGift || !employeeId) {
                 showNoSelection();
                 return;
             }
 
             try {
                 const gift = JSON.parse(selectedGift);
-                const user = JSON.parse(userData);
                 
                 const selectionDate = new Date(gift.selectionTime).toLocaleString('he-IL');
                 
@@ -488,16 +479,8 @@ class GiftWebsiteGenerator:
                                 <p>${gift.giftPrice}</p>
                             </div>
                             <div class="detail-item">
-                                <h3>שם מלא</h3>
-                                <p>${user.fullName}</p>
-                            </div>
-                            <div class="detail-item">
-                                <h3>אימייל</h3>
-                                <p>${user.email}</p>
-                            </div>
-                            <div class="detail-item">
-                                <h3>כתובת</h3>
-                                <p>${user.address}</p>
+                                <h3>מספר עובד</h3>
+                                <p>${gift.employeeId}</p>
                             </div>
                             <div class="detail-item">
                                 <h3>תאריך בחירה</h3>
@@ -533,9 +516,9 @@ class GiftWebsiteGenerator:
         }
 
         function logout() {
-            localStorage.removeItem('userData');
+            localStorage.removeItem('employeeId');
             localStorage.removeItem('selectedGift');
-            window.location.href = 'login.html';
+            window.location.href = 'cover.html';
         }
     </script>
 </body>

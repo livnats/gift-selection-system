@@ -107,20 +107,17 @@
         function replaceMainImage(src, alt, element) { const mainImage = document.getElementById('mainImage'); mainImage.src = src; mainImage.alt = alt; const galleryImages = document.querySelectorAll('.gallery-image'); galleryImages.forEach(img => { if (img === element) { img.classList.add('active'); } else { img.classList.remove('active'); } }); }
 
         function selectGift() {
-            const userData = localStorage.getItem('userData');
-            if (!userData) {
-                window.location.href = 'login.html';
+            const employeeId = localStorage.getItem('employeeId');
+            if (!employeeId) {
+                window.location.href = 'cover.html';
                 return;
             }
 
-            const user = JSON.parse(userData);
             const giftData = {
                 giftId: '1',
                 giftName: 'שעון חכם מתקדם',
                 giftPrice: '₪1299.99',
-                userEmail: user.email,
-                userFullName: user.fullName,
-                userAddress: user.address,
+                employeeId: employeeId,
                 selectionTime: new Date().toISOString()
             };
 
