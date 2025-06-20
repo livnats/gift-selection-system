@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-Gift Catalog Website Generator
-Creates a complete HTML website from a CSV catalog file
+Gift Catalog Website Generator with User Authentication and Selection Tracking
+Creates a complete HTML website from a CSV catalog file with login system
 """
 
 import csv
 import os
+import json
+from datetime import datetime
 
 class GiftWebsiteGenerator:
     def __init__(self, csv_file):
@@ -46,6 +48,9 @@ class GiftWebsiteGenerator:
         """Generate the complete website"""
         os.makedirs(output_dir, exist_ok=True)
         
+        # Copy login page to output directory
+        self.copy_login_page(output_dir)
+        
         # Generate catalog page
         catalog_html = self.generate_catalog_page()
         with open(os.path.join(output_dir, "index.html"), 'w', encoding='utf-8') as f:
@@ -58,15 +63,35 @@ class GiftWebsiteGenerator:
             with open(os.path.join(output_dir, filename), 'w', encoding='utf-8') as f:
                 f.write(gift_html)
         
+        # Generate selection tracking page
+        selection_html = self.generate_selection_page()
+        with open(os.path.join(output_dir, "selection.html"), 'w', encoding='utf-8') as f:
+            f.write(selection_html)
+        
         print(f"Website generated successfully in '{output_dir}' directory!")
         print("Generated files:")
+        print("  - login.html (user authentication)")
         print("  - index.html (catalog page)")
         for gift in self.gifts:
             print(f"  - gift_{gift['id']}.html ({gift['name']})")
-        print("\nOpen 'index.html' in your browser to view the website.")
+        print("  - selection.html (gift selection tracking)")
+        print("\nStart with 'login.html' to access the website.")
+
+    def copy_login_page(self, output_dir):
+        """Copy the login page to the output directory"""
+        login_source = "login.html"
+        login_dest = os.path.join(output_dir, "login.html")
+        
+        if os.path.exists(login_source):
+            with open(login_source, 'r', encoding='utf-8') as src:
+                content = src.read()
+            with open(login_dest, 'w', encoding='utf-8') as dst:
+                dst.write(content)
+        else:
+            print(f"Warning: {login_source} not found. Please create it manually.")
 
     def generate_catalog_page(self):
-        """Generate the main catalog page HTML"""
+        """Generate the main catalog page HTML with authentication check"""
         html = """<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -79,6 +104,11 @@ class GiftWebsiteGenerator:
         .header { text-align: center; color: white; margin-bottom: 40px; padding: 20px; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
         .header p { font-size: 1.2rem; opacity: 0.9; }
+        .user-info { background: rgba(255, 255, 255, 0.1); color: white; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; }
+        .user-info h3 { margin-bottom: 5px; font-size: 1.1rem; }
+        .user-info p { opacity: 0.9; font-size: 0.9rem; }
+        .logout-btn { background: rgba(255, 255, 255, 0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-left: 10px; font-size: 0.9rem; }
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.3); }
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .catalog-item { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; position: relative; }
         .catalog-item:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
@@ -95,6 +125,9 @@ class GiftWebsiteGenerator:
         .catalog-item-availability.out-of-stock { background: #e74c3c; }
         .view-details-btn { display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: 600; text-align: center; transition: all 0.3s ease; margin-top: 15px; width: 100%; }
         .view-details-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
+        .auth-error { background: #fee; color: #e74c3c; padding: 20px; border-radius: 15px; text-align: center; margin: 20px; }
+        .auth-error h2 { margin-bottom: 10px; }
+        .auth-error a { color: #e74c3c; text-decoration: underline; }
         @media (max-width: 768px) { .catalog-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 10px; } .header h1 { font-size: 2rem; } .header p { font-size: 1rem; } }
         @media (max-width: 480px) { body { padding: 10px; } .catalog-grid { grid-template-columns: 1fr; gap: 15px; } .header h1 { font-size: 1.8rem; } }
         @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -105,11 +138,25 @@ class GiftWebsiteGenerator:
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎁 קטלוג מתנות חג</h1>
-        <p>בחרו מתנה מושלמת לעובדים שלכם</p>
+    <div id="authError" class="auth-error" style="display: none;">
+        <h2>🔒 נדרשת התחברות</h2>
+        <p>אנא התחברו כדי לצפות בקטלוג המתנות</p>
+        <a href="login.html">לחצו כאן להתחברות</a>
     </div>
-    <div class="catalog-grid">"""
+
+    <div id="mainContent" style="display: none;">
+        <div class="header">
+            <h1>🎁 קטלוג מתנות חג</h1>
+            <p>בחרו מתנה מושלמת לעובדים שלכם</p>
+        </div>
+
+        <div class="user-info" id="userInfo">
+            <h3>ברוכים הבאים!</h3>
+            <p id="userDetails"></p>
+            <button class="logout-btn" onclick="logout()">התנתק</button>
+        </div>
+
+        <div class="catalog-grid">"""
         
         for gift in self.gifts:
             # Get the first photo for the catalog preview
@@ -139,8 +186,39 @@ class GiftWebsiteGenerator:
         </div>"""
         
         html += """
+        </div>
     </div>
+
     <script>
+        // Check authentication on page load
+        window.addEventListener('load', function() {
+            checkAuth();
+        });
+
+        function checkAuth() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                document.getElementById('authError').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'none';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userData);
+                document.getElementById('userDetails').textContent = `${user.fullName} (${user.email})`;
+                document.getElementById('authError').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } catch (e) {
+                document.getElementById('authError').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+
         document.querySelectorAll('.catalog-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 if (e.target.tagName !== 'A') {
@@ -158,7 +236,7 @@ class GiftWebsiteGenerator:
         return html
 
     def generate_gift_page(self, gift):
-        """Generate individual gift page HTML"""
+        """Generate individual gift page HTML with selection tracking"""
         
         # Generate photo gallery HTML
         photo_gallery_html = ""
@@ -217,8 +295,11 @@ class GiftWebsiteGenerator:
         .gallery-image:hover {{ transform: scale(1.05); filter: brightness(1.1); border-color: #ff6b6b; }}
         .gallery-image.active {{ border-color: #ff6b6b; box-shadow: 0 0 10px rgba(255, 107, 107, 0.3); }}
         .main-image {{ width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }}
-        .seller-link {{ display: inline-block; background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; text-align: center; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3); }}
+        .seller-link {{ display: inline-block; background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; text-align: center; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3); margin-bottom: 15px; width: 100%; }}
         .seller-link:hover {{ transform: translateY(-2px); box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4); background: linear-gradient(135deg, #44a08d, #4ecdc4); }}
+        .select-gift-btn {{ display: inline-block; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; text-decoration: none; padding: 15px 25px; border-radius: 25px; font-weight: 600; text-align: center; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); width: 100%; border: none; cursor: pointer; font-size: 1.1rem; }}
+        .select-gift-btn:hover {{ transform: translateY(-2px); box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4); }}
+        .select-gift-btn:disabled {{ background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }}
         .price-tag {{ position: absolute; top: 15px; left: 15px; background: rgba(255, 255, 255, 0.95); color: #ff6b6b; padding: 8px 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); }}
         .availability {{ position: absolute; top: 15px; right: 15px; background: #2ecc71; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }}
         .availability.out-of-stock {{ background: #e74c3c; }}
@@ -228,6 +309,7 @@ class GiftWebsiteGenerator:
         .modal-content {{ margin: auto; display: block; max-width: 90%; max-height: 90%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 10px; }}
         .close {{ position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 1001; }}
         .close:hover {{ color: #bbb; }}
+        .success-message {{ background: #efe; color: #27ae60; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #cfc; display: none; }}
         @media (max-width: 768px) {{ .gift-card {{ max-width: 350px; margin: 10px; }} .gift-header {{ padding: 20px; }} .gift-title {{ font-size: 1.3rem; }} .gift-content {{ padding: 20px; }} .image-gallery {{ grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }} .image-gallery.one-image, .image-gallery.two-images {{ max-width: 180px; }} .gallery-image {{ height: 70px; }} .main-image {{ height: 180px; }} .back-button {{ top: 10px; left: 10px; padding: 8px 15px; font-size: 0.9rem; }} }}
         @media (max-width: 480px) {{ body {{ padding: 10px; }} .gift-card {{ max-width: 100%; border-radius: 15px; }} .gift-header {{ padding: 15px; }} .gift-title {{ font-size: 1.2rem; }} .gift-content {{ padding: 15px; }} .image-gallery {{ grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 5px; }} .image-gallery.one-image, .image-gallery.two-images {{ max-width: 160px; }} .gallery-image {{ height: 60px; }} .main-image {{ height: 160px; }} .seller-link {{ padding: 10px 20px; font-size: 0.9rem; }} }}
         @keyframes slideInUp {{ from {{ opacity: 0; transform: translateY(30px); }} to {{ opacity: 1; transform: translateY(0); }} }}
@@ -249,6 +331,8 @@ class GiftWebsiteGenerator:
                 {photo_gallery_html}
             </div>
             <a href="{gift['seller_link']}" class="seller-link" target="_blank" rel="noopener noreferrer">צפה באתר החנות</a>
+            <button class="select-gift-btn" onclick="selectGift()" id="selectBtn">בחר מתנה זו</button>
+            <div class="success-message" id="successMessage">המתנה נבחרה בהצלחה! תוכלו לראות את הבחירה שלכם בדף הבחירות.</div>
         </div>
     </div>
     <div id="imageModal" class="modal">
@@ -256,6 +340,15 @@ class GiftWebsiteGenerator:
         <img class="modal-content" id="modalImage">
     </div>
     <script>
+        // Check authentication
+        window.addEventListener('load', function() {{
+            const userData = localStorage.getItem('userData');
+            if (!userData) {{
+                window.location.href = 'login.html';
+                return;
+            }}
+        }});
+
         function openModal(src) {{ const modal = document.getElementById('imageModal'); const modalImg = document.getElementById('modalImage'); modal.style.display = 'block'; modalImg.src = src; }}
         function closeModal() {{ document.getElementById('imageModal').style.display = 'none'; }}
         document.getElementById('imageModal').addEventListener('click', function(e) {{ if (e.target === this) {{ closeModal(); }} }});
@@ -263,6 +356,187 @@ class GiftWebsiteGenerator:
         function updateImageLayout() {{ const gallery = document.getElementById('imageGallery'); if (!gallery) return; const images = gallery.querySelectorAll('.gallery-image'); const visibleImages = Array.from(images).filter(img => img.style.display !== 'none' && img.src && img.src.trim() !== ''); gallery.classList.remove('one-image', 'two-images', 'three-images', 'four-images'); if (visibleImages.length === 1) {{ gallery.classList.add('one-image'); }} else if (visibleImages.length === 2) {{ gallery.classList.add('two-images'); }} else if (visibleImages.length === 3) {{ gallery.classList.add('three-images'); }} else if (visibleImages.length === 4) {{ gallery.classList.add('four-images'); }} }}
         document.addEventListener('DOMContentLoaded', function() {{ updateImageLayout(); }});
         function replaceMainImage(src, alt, element) {{ const mainImage = document.getElementById('mainImage'); mainImage.src = src; mainImage.alt = alt; const galleryImages = document.querySelectorAll('.gallery-image'); galleryImages.forEach(img => {{ if (img === element) {{ img.classList.add('active'); }} else {{ img.classList.remove('active'); }} }}); }}
+
+        function selectGift() {{
+            const userData = localStorage.getItem('userData');
+            if (!userData) {{
+                window.location.href = 'login.html';
+                return;
+            }}
+
+            const user = JSON.parse(userData);
+            const giftData = {{
+                giftId: '{gift['id']}',
+                giftName: '{gift['name']}',
+                giftPrice: '{gift['price']}',
+                userEmail: user.email,
+                userFullName: user.fullName,
+                userAddress: user.address,
+                selectionTime: new Date().toISOString()
+            }};
+
+            // Store selection in localStorage
+            localStorage.setItem('selectedGift', JSON.stringify(giftData));
+
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('selectBtn').disabled = true;
+            document.getElementById('selectBtn').textContent = 'נבחר ✓';
+
+            // Redirect to selection page after delay
+            setTimeout(() => {{
+                window.location.href = 'selection.html';
+            }}, 2000);
+        }}
+    </script>
+</body>
+</html>"""
+        
+        return html
+
+    def generate_selection_page(self):
+        """Generate the gift selection tracking page"""
+        html = """<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בחירת מתנה - קטלוג מתנות חג</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .content { padding: 30px; }
+        .selection-card { background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 25px; border-left: 5px solid #27ae60; }
+        .selection-card h2 { color: #333; margin-bottom: 15px; font-size: 1.3rem; }
+        .selection-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .detail-item { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .detail-item h3 { color: #667eea; font-size: 0.9rem; margin-bottom: 5px; text-transform: uppercase; }
+        .detail-item p { color: #333; font-weight: 600; }
+        .actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: inline-block; text-align: center; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+        .no-selection { text-align: center; padding: 50px 20px; color: #666; }
+        .no-selection h2 { margin-bottom: 15px; color: #333; }
+        .logout-btn { position: fixed; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.9); color: #667eea; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
+        .logout-btn:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }
+        @media (max-width: 768px) { .container { margin: 10px; } .header { padding: 20px; } .content { padding: 20px; } .selection-details { grid-template-columns: 1fr; } .actions { flex-direction: column; } .logout-btn { top: 10px; right: 10px; padding: 8px 15px; font-size: 0.9rem; } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .container { animation: slideInUp 0.6s ease-out; }
+    </style>
+</head>
+<body>
+    <a href="#" class="logout-btn" onclick="logout()">התנתק</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎁 בחירת מתנה</h1>
+            <p>פרטי הבחירה שלכם</p>
+        </div>
+        
+        <div class="content">
+            <div id="selectionContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            checkAuth();
+            loadSelection();
+        });
+
+        function checkAuth() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function loadSelection() {
+            const selectedGift = localStorage.getItem('selectedGift');
+            const userData = localStorage.getItem('userData');
+            
+            if (!selectedGift || !userData) {
+                showNoSelection();
+                return;
+            }
+
+            try {
+                const gift = JSON.parse(selectedGift);
+                const user = JSON.parse(userData);
+                
+                const selectionDate = new Date(gift.selectionTime).toLocaleString('he-IL');
+                
+                document.getElementById('selectionContent').innerHTML = `
+                    <div class="selection-card">
+                        <h2>✅ המתנה שלכם נבחרה בהצלחה!</h2>
+                        <div class="selection-details">
+                            <div class="detail-item">
+                                <h3>מתנה נבחרת</h3>
+                                <p>${gift.giftName}</p>
+                            </div>
+                            <div class="detail-item">
+                                <h3>מחיר</h3>
+                                <p>${gift.giftPrice}</p>
+                            </div>
+                            <div class="detail-item">
+                                <h3>שם מלא</h3>
+                                <p>${user.fullName}</p>
+                            </div>
+                            <div class="detail-item">
+                                <h3>אימייל</h3>
+                                <p>${user.email}</p>
+                            </div>
+                            <div class="detail-item">
+                                <h3>כתובת</h3>
+                                <p>${user.address}</p>
+                            </div>
+                            <div class="detail-item">
+                                <h3>תאריך בחירה</h3>
+                                <p>${selectionDate}</p>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <a href="index.html" class="btn btn-primary">חזרה לקטלוג</a>
+                            <a href="#" class="btn btn-secondary" onclick="changeSelection()">שנה בחירה</a>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                showNoSelection();
+            }
+        }
+
+        function showNoSelection() {
+            document.getElementById('selectionContent').innerHTML = `
+                <div class="no-selection">
+                    <h2>לא נבחרה מתנה עדיין</h2>
+                    <p>עדיין לא בחרתם מתנה מהקטלוג</p>
+                    <div class="actions" style="justify-content: center; margin-top: 20px;">
+                        <a href="index.html" class="btn btn-primary">לך לקטלוג</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function changeSelection() {
+            localStorage.removeItem('selectedGift');
+            window.location.href = 'index.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('selectedGift');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>"""

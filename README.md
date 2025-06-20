@@ -1,181 +1,238 @@
 # 🎁 Gift Catalog Website Generator
 
-A Python-based tool that generates a beautiful, responsive website for browsing and selecting holiday gifts from a CSV catalog. Perfect for internal company gift selection systems.
+A complete gift catalog website generator with user authentication and gift selection tracking. Creates a responsive, modern website from a CSV catalog file with Hebrew text support.
 
 ## ✨ Features
 
-- **📱 Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- **🌐 Hebrew Support**: Full RTL (right-to-left) text support with Hebrew interface
-- **🖼️ Dynamic Image Gallery**: Supports 1-4 images per product with interactive thumbnails
-- **🎨 Modern UI**: Beautiful gradient backgrounds, smooth animations, and professional styling
-- **📊 CSV Data Source**: Easy to update product catalog using CSV files
-- **🔗 Seller Links**: Direct links to product pages on external websites
-- **📱 Modal Image Viewer**: Click images to view them enlarged
-- **⚡ Fast Generation**: Generates complete website in seconds
+### 🔐 User Authentication System
+- **Login Page**: Users must provide email, full name, and address to access the catalog
+- **Session Management**: Automatic login state management using localStorage
+- **User Validation**: Email format validation and required field checking
+- **Logout Functionality**: Secure logout with session cleanup
+
+### 🎯 Gift Selection Tracking
+- **Individual Gift Pages**: Detailed view of each gift with photo galleries
+- **Selection Button**: Users can select their preferred gift
+- **Selection Confirmation**: Success messages and automatic redirection
+- **Selection History**: Users can view their current selection
+- **Change Selection**: Option to modify gift choice
+
+### 📊 Data Export
+- **CSV Export**: Export gift selections to CSV file for tracking
+- **Complete User Data**: Captures user details, gift choice, and timestamps
+- **Sample Export Script**: Ready-to-use Python script for data export
+
+### 🎨 Modern UI/UX
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+- **Hebrew RTL Support**: Full right-to-left text support
+- **Interactive Elements**: Hover effects, animations, and smooth transitions
+- **Photo Galleries**: Multiple images per gift with thumbnail navigation
+- **Modal Image Viewer**: Click to enlarge images
 
 ## 📁 Project Structure
 
 ```
 galtex/
-├── generate_gift_website.py    # Main Python script
-├── gifts-catalog.csv           # Product catalog data
-├── gift-card-template.html     # Original template file
-├── gift_website/               # Generated website (created after running script)
-│   ├── index.html             # Main catalog page
-│   ├── gift_1.html            # Individual product pages
+├── login.html                    # User authentication page
+├── generate_gift_website.py      # Main website generator
+├── export_selections.py          # CSV export utility
+├── gifts-catalog.csv            # Gift catalog data
+├── gift_selections.csv          # Generated selections (sample)
+├── gift_website/                # Generated website files
+│   ├── login.html              # Authentication page
+│   ├── index.html              # Main catalog page
+│   ├── gift_1.html             # Individual gift pages
 │   ├── gift_2.html
-│   └── gift_3.html
-├── .gitignore                 # Git ignore rules
-└── README.md                  # This file
+│   ├── gift_3.html
+│   └── selection.html          # Selection tracking page
+├── .gitignore                   # Git ignore file
+└── README.md                   # This file
 ```
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 1. Setup
+```bash
+# Clone or download the project
+cd galtex
 
-- Python 3.6 or higher
-- No additional dependencies required (uses only standard library)
-
-### Installation
-
-1. **Clone or download the project**:
-   ```bash
-   git clone <your-repository-url>
-   cd galtex
-   ```
-
-2. **Prepare your catalog data**:
-   - Edit `gifts-catalog.csv` with your product information
-   - Or create a new CSV file with the same structure
-
-3. **Generate the website**:
-   ```bash
-   python3 generate_gift_website.py
-   ```
-
-4. **View the website**:
-   - Open `gift_website/index.html` in your web browser
-   - Or serve it using a local web server
-
-## 📊 CSV Format
-
-The CSV file should have the following columns:
-
-| Column | Description | Example |
-|--------|-------------|---------|
-| `gift_id` | Unique product identifier | `1` |
-| `gift_name` | Product name (Hebrew) | `שעון חכם מתקדם` |
-| `gift_subtitle` | Product subtitle (Hebrew) | `חוויית טכנולוגיה מתקדמת` |
-| `description` | Product description (Hebrew) | `שעון חכם עם מעקב בריאות...` |
-| `price` | Price in Israeli Shekels | `₪1299.99` |
-| `availability` | Stock status (Hebrew) | `במלאי` |
-| `seller_link` | Link to product page | `https://example-store.com/product` |
-| `photo1` | Main product image URL | `https://images.unsplash.com/...` |
-| `photo2` | Additional image URL (optional) | `https://images.unsplash.com/...` |
-| `photo3` | Additional image URL (optional) | `https://images.unsplash.com/...` |
-| `photo4` | Additional image URL (optional) | `https://images.unsplash.com/...` |
-
-### Example CSV Entry
-
-```csv
-1,שעון חכם מתקדם,חוויית טכנולוגיה מתקדמת,"שעון חכם עם מעקב בריאות מתקדם, GPS מובנה, וסוללה של 7 ימים.",₪1299.99,במלאי,https://example-store.com/smartwatch,https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=200&fit=crop,https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&h=80&fit=crop,https://images.unsplash.com/photo-1544117519-31a4b719223d?w=150&h=80&fit=crop,,
+# Make sure you have Python 3 installed
+python3 --version
 ```
 
-## 🎨 Website Features
+### 2. Prepare Your Catalog
+Edit `gifts-catalog.csv` with your gift data:
+```csv
+gift_id,gift_name,gift_subtitle,description,price,availability,seller_link,photo1,photo2,photo3,photo4
+GIFT001,שם המתנה,כותרת משנה,תיאור המתנה,₪299,במלאי,https://example.com,image1.jpg,image2.jpg,,
+```
 
-### Catalog Page (`index.html`)
-- **Grid Layout**: Responsive grid showing all products
-- **Product Cards**: Each card shows image, title, description, price, and availability
-- **Hover Effects**: Cards lift up on hover with enhanced shadows
-- **Click Navigation**: Click any card to view product details
+### 3. Generate Website
+```bash
+python3 generate_gift_website.py
+```
 
-### Product Pages (`gift_X.html`)
-- **Detailed View**: Full product information with complete description
-- **Image Gallery**: 
-  - Main featured image
-  - 1-4 thumbnail images below
-  - Click thumbnails to replace main image
-  - Click main image to view in modal
-- **Interactive Elements**:
-  - Active thumbnail highlighting
-  - Modal image viewer
-  - Back to catalog button
-  - Direct link to seller website
+### 4. Access the Website
+1. Open `gift_website/login.html` in your browser
+2. Enter user details (email, full name, address)
+3. Browse the gift catalog
+4. Select your preferred gift
+5. View your selection on the tracking page
 
-### Responsive Design
-- **Desktop**: Full-featured layout with optimal spacing
-- **Tablet**: Adjusted grid and image sizes
-- **Mobile**: Single-column layout with compact design
+## 📋 CSV Catalog Format
 
-## 🔧 Customization
+The `gifts-catalog.csv` file should contain the following columns:
+
+| Column | Description | Required | Example |
+|--------|-------------|----------|---------|
+| `gift_id` | Unique gift identifier | Yes | `GIFT001` |
+| `gift_name` | Gift name in Hebrew | Yes | `שעון חכם מתקדם` |
+| `gift_subtitle` | Short description | Yes | `עם מעקב פעילות` |
+| `description` | Detailed description | Yes | `שעון חכם עם GPS...` |
+| `price` | Price in shekels | Yes | `₪899` |
+| `availability` | Stock status | Yes | `במלאי` |
+| `seller_link` | Store URL | Yes | `https://store.com` |
+| `photo1` | Main image URL | Yes | `https://example.com/img1.jpg` |
+| `photo2` | Additional image | No | `https://example.com/img2.jpg` |
+| `photo3` | Additional image | No | `https://example.com/img3.jpg` |
+| `photo4` | Additional image | No | `https://example.com/img4.jpg` |
+
+## 🔐 User Authentication Flow
+
+1. **Login Page**: Users enter email, full name, and address
+2. **Validation**: Email format and required fields are validated
+3. **Session Storage**: User data is stored in browser localStorage
+4. **Catalog Access**: Authenticated users can browse gifts
+5. **Gift Selection**: Users can select and track their choices
+6. **Logout**: Users can logout and clear session data
+
+## 📊 Gift Selection Tracking
+
+### Selection Data Captured
+- Gift ID and name
+- Gift price
+- User email and full name
+- User address
+- Selection timestamp
+- Export timestamp
+
+### Exporting Selections
+```bash
+# Run the export script to see sample data
+python3 export_selections.py
+
+# The script creates gift_selections.csv with the structure:
+gift_id,gift_name,gift_price,user_email,user_full_name,user_address,selection_time,export_time
+```
+
+### Manual Data Export
+To export real user selections:
+1. Open browser developer tools (F12)
+2. Go to Console tab
+3. Run: `localStorage.getItem('selectedGift')`
+4. Copy the JSON data
+5. Use the export script to convert to CSV
+
+## 🎨 Customization
 
 ### Styling
-The website uses CSS with:
-- **Color Scheme**: Purple gradients with red-orange accents
-- **Typography**: Segoe UI font family
-- **Animations**: Smooth transitions and entrance effects
-- **Shadows**: Layered shadows for depth
+- All CSS is embedded in the HTML files
+- Modern gradient backgrounds and animations
+- Responsive design with mobile-first approach
+- Hebrew RTL text support
 
-### Adding Products
-1. Add new rows to `gifts-catalog.csv`
-2. Run `python3 generate_gift_website.py`
-3. New product pages will be automatically generated
+### Adding Features
+- Modify `generate_gift_website.py` to add new features
+- Update the gift card template in the script
+- Add new pages by extending the generator class
 
-### Modifying the Template
-1. Edit the HTML generation functions in `generate_gift_website.py`
-2. Update CSS styles within the script
-3. Regenerate the website to see changes
+## 🔧 Technical Details
 
-## 🌐 Deployment
+### Technologies Used
+- **Python 3**: Website generation and CSV processing
+- **HTML5**: Semantic markup with Hebrew RTL support
+- **CSS3**: Modern styling with gradients and animations
+- **JavaScript**: Interactive features and localStorage management
+- **CSV**: Data storage and export format
 
-### Local Development
-```bash
-# Generate website
-python3 generate_gift_website.py
+### Browser Compatibility
+- Chrome/Chromium (recommended)
+- Firefox
+- Safari
+- Edge
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
-# Serve locally (optional)
-python3 -m http.server 8000
-# Then visit http://localhost:8000/gift_website/
+### Local Storage Structure
+```javascript
+// User data
+{
+  "email": "user@example.com",
+  "fullName": "שם מלא",
+  "address": "כתובת מלאה",
+  "loginTime": "2024-12-15T10:30:00.000Z"
+}
+
+// Selected gift
+{
+  "giftId": "GIFT001",
+  "giftName": "שם המתנה",
+  "giftPrice": "₪299",
+  "userEmail": "user@example.com",
+  "userFullName": "שם מלא",
+  "userAddress": "כתובת מלאה",
+  "selectionTime": "2024-12-15T10:30:00.000Z"
+}
 ```
 
-### Web Hosting
-1. Upload the `gift_website` folder to your web server
-2. Ensure the server supports UTF-8 encoding for Hebrew text
-3. The website is completely self-contained (no external dependencies)
+## 📝 Usage Examples
 
-### GitHub Pages
-1. Push your repository to GitHub
-2. Enable GitHub Pages in repository settings
-3. Set the source to the `gift_website` folder
-4. Your website will be available at `https://username.github.io/repository-name/`
+### Basic Usage
+```bash
+# Generate website from existing catalog
+python3 generate_gift_website.py
+
+# Open login page
+open gift_website/login.html
+```
+
+### Custom Catalog
+```bash
+# Edit your catalog file
+nano gifts-catalog.csv
+
+# Regenerate website
+python3 generate_gift_website.py
+```
+
+### Export Selections
+```bash
+# Create sample export
+python3 export_selections.py
+
+# View generated CSV
+cat gift_selections.csv
+```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## 📝 License
+## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
 ## 🆘 Support
 
-If you encounter any issues or have questions:
-1. Check the CSV format matches the expected structure
-2. Ensure all image URLs are accessible
-3. Verify Python 3.6+ is installed
-4. Check that the `gifts-catalog.csv` file exists in the project directory
-
-## 🔄 Version History
-
-- **v1.0.0**: Initial release with catalog and product pages
-- **v1.1.0**: Added responsive design and Hebrew RTL support
-- **v1.2.0**: Enhanced image gallery with modal viewer
-- **v1.3.0**: Added flexible image layout (1-4 images per product)
+For issues or questions:
+1. Check the documentation above
+2. Review the CSV format requirements
+3. Test with the sample data provided
+4. Open an issue with detailed information
 
 ---
 
-**Made with ❤️ for easy gift selection** 
+**Happy Gift Selecting! 🎁✨** 
