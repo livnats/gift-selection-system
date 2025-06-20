@@ -3,81 +3,27 @@
     "giftId": "3",
     "giftName": "מחשב נייד אולטרה-קל",
     "giftPrice": " 16GB RAM",
-    "employeeId": "1237",
-    "selectionTime": "2025-06-20T17:04:18.055Z",
-    "receivedAt": "2025-06-20T20:04:18.063767",
-    "id": "selection_20250620_200418_063783"
-  },
-  {
-    "giftId": "1",
-    "giftName": "שעון חכם מתקדם",
-    "giftPrice": "₪1299.99",
-    "employeeId": "1212",
-    "selectionTime": "2025-06-20T17:12:57.594Z",
-    "receivedAt": "2025-06-20T20:12:57.605754",
-    "id": "selection_20250620_201257_605767"
-  },
-  {
-    "giftId": "2",
-    "giftName": "אוזניות אלחוטיות פרימיום",
-    "giftPrice": "₪899.99",
-    "employeeId": "1212",
-    "selectionTime": "2025-06-20T17:13:08.218Z",
-    "receivedAt": "2025-06-20T20:13:08.238914",
-    "id": "selection_20250620_201308_238921"
-  },
-  {
-    "giftId": "1",
-    "giftName": "שעון חכם מתקדם",
-    "giftPrice": "₪1299.99",
-    "employeeId": "9898",
-    "selectionTime": "2025-06-20T17:17:12.009Z",
-    "receivedAt": "2025-06-20T20:17:12.021428",
-    "id": "selection_20250620_201712_021439"
-  },
-  {
-    "giftId": "2",
-    "giftName": "אוזניות אלחוטיות פרימיום",
-    "giftPrice": "₪899.99",
-    "employeeId": "12",
-    "selectionTime": "2025-06-20T17:19:42.226Z",
-    "receivedAt": "2025-06-20T20:19:42.237540",
-    "id": "selection_20250620_201942_237553"
-  },
-  {
-    "giftId": "1",
-    "giftName": "שעון חכם מתקדם",
-    "giftPrice": "₪1299.99",
-    "employeeId": "13",
-    "selectionTime": "2025-06-20T17:19:52.586Z",
-    "receivedAt": "2025-06-20T20:19:52.597009",
-    "id": "selection_20250620_201952_597021"
-  },
-  {
-    "giftId": "3",
-    "giftName": "מחשב נייד אולטרה-קל",
-    "giftPrice": " 16GB RAM",
-    "employeeId": "11",
-    "selectionTime": "2025-06-20T17:20:02.610Z",
-    "receivedAt": "2025-06-20T20:20:02.618902",
-    "id": "selection_20250620_202002_618914"
-  },
-  {
-    "giftId": "1",
-    "giftName": "שעון חכם מתקדם",
-    "giftPrice": "₪1299.99",
     "employeeId": "1",
-    "selectionTime": "2025-06-20T17:27:12.182Z",
-    "receivedAt": "2025-06-20T20:27:12.188930",
-    "id": "selection_20250620_202712_188935"
+    "selectionTime": "2025-06-20T17:36:50.897Z",
+    "receivedAt": "2025-06-20T20:36:50.907646",
+    "id": "selection_20250620_203650_907664"
   },
   {
     "giftId": "3",
     "giftName": "מחשב נייד אולטרה-קל",
     "giftPrice": " 16GB RAM",
+    "employeeId": "4",
+    "selectionTime": "2025-06-20T17:35:45.512Z",
+    "receivedAt": "2025-06-20T20:35:45.523224",
+    "id": "selection_20250620_203545_523244"
+  },
+  {
+    "giftId": "1",
+    "giftName": "שעון חכם מתקדם",
+    "giftPrice": "₪1299.99",
     "employeeId": "2",
-    "selectionTime": "2025-06-20T17:33:18.223Z",
-    "receivedAt": "2025-06-20T20:33:18.233804",
-    "id": "selection_20250620_203318_233816"
+    "selectionTime": "2025-06-20T17:36:17.024Z",
+    "receivedAt": "2025-06-20T20:36:17.035040",
+    "id": "selection_20250620_203617_035054"
   }
 ]
