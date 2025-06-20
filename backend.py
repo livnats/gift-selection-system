@@ -147,6 +147,25 @@ def get_aggregate():
     except Exception as e:
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/api/reset-selections', methods=['POST'])
+def reset_selections():
+    """Reset all employee selections"""
+    try:
+        # Clear the selections file
+        if os.path.exists(SELECTIONS_FILE):
+            os.remove(SELECTIONS_FILE)
+        
+        print("🗑️ All employee selections have been reset")
+        
+        return jsonify({
+            'success': True,
+            'message': 'All employee selections have been cleared successfully'
+        })
+        
+    except Exception as e:
+        print(f"❌ Error resetting selections: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -160,6 +179,7 @@ if __name__ == '__main__':
     print("  POST /api/select-gift - Save gift selection")
     print("  GET  /api/selections  - Get all selections")
     print("  GET  /api/aggregate   - Get aggregated statistics")
+    print("  GET  /api/reset-selections - Reset all employee selections")
     print("  GET  /api/health      - Health check")
     print()
     
