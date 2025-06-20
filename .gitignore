@@ -54,4 +54,8 @@ Thumbs.db
 # Archive files
 *.zip
 *.tar.gz
-*.rar 
+*.rar
+
+# Backend data files (runtime data)
+gift_selections_backend.json
+gift_selections.csv 
