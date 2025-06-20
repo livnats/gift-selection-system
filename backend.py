@@ -140,7 +140,8 @@ def get_aggregate():
             'totalSelections': len(selections),
             'uniqueEmployees': len(employee_gifts),
             'giftCounts': gift_counts,
-            'employeeSelections': employee_gifts
+            'employeeSelections': employee_gifts,
+            'selections': selections
         })
         
     except Exception as e:
