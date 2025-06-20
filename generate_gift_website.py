@@ -50,6 +50,8 @@ class GiftWebsiteGenerator:
         
         # Copy cover page to output directory
         self.copy_cover_page(output_dir)
+        # Copy admin page to output directory
+        self.copy_admin_page(output_dir)
         
         # Generate catalog page
         catalog_html = self.generate_catalog_page()
@@ -71,11 +73,13 @@ class GiftWebsiteGenerator:
         print(f"Website generated successfully in '{output_dir}' directory!")
         print("Generated files:")
         print("  - cover.html (employee ID entry)")
+        print("  - admin.html (admin dashboard)")
         print("  - index.html (catalog page)")
         for gift in self.gifts:
             print(f"  - gift_{gift['id']}.html ({gift['name']})")
         print("  - selection.html (gift selection tracking)")
         print("\nStart with 'cover.html' to access the website.")
+        print("Admin dashboard available at 'admin.html'")
 
     def copy_cover_page(self, output_dir):
         """Copy the cover page to the output directory"""
@@ -89,6 +93,19 @@ class GiftWebsiteGenerator:
                 dst.write(content)
         else:
             print(f"Warning: {cover_source} not found. Please create it manually.")
+
+    def copy_admin_page(self, output_dir):
+        """Copy the admin page to the output directory"""
+        admin_source = "admin.html"
+        admin_dest = os.path.join(output_dir, "admin.html")
+        
+        if os.path.exists(admin_source):
+            with open(admin_source, 'r', encoding='utf-8') as src:
+                content = src.read()
+            with open(admin_dest, 'w', encoding='utf-8') as dst:
+                dst.write(content)
+        else:
+            print(f"Warning: {admin_source} not found. Please create it manually.")
 
     def generate_catalog_page(self):
         """Generate the main catalog page HTML with employee ID check"""
@@ -386,9 +403,13 @@ class GiftWebsiteGenerator:
                     // Store selection in localStorage as backup
                     localStorage.setItem('selectedGift', JSON.stringify(giftData));
                     
-                    // Show success message
+                    // Show success message based on action
+                    const message = data.action === 'updated' ? 
+                        'הבחירה שלכם עודכנה בהצלחה!' : 
+                        'המתנה נבחרה בהצלחה!';
+                    document.getElementById('successMessage').textContent = message;
                     document.getElementById('successMessage').style.display = 'block';
-                    selectBtn.textContent = 'נבחר ✓';
+                    selectBtn.textContent = data.action === 'updated' ? 'עודכן ✓' : 'נבחר ✓';
                     
                     // Redirect to selection page after delay
                     setTimeout(() => {{
