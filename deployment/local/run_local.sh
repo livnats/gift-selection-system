@@ -4,6 +4,9 @@
 echo "🎁 Starting Gift Selection Website locally..."
 echo "=============================================="
 
+# Change to project root directory
+cd "$(dirname "$0")/../.."
+
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
     echo "📦 Creating virtual environment..."
@@ -24,7 +27,7 @@ python3 generate_gift_website.py
 
 # Generate local development pages
 echo "🔧 Generating local development pages..."
-python3 generate_local_pages.py
+python3 deployment/local/generate_local_pages.py
 
 # Start backend server
 echo "🚀 Starting backend server on http://localhost:5000"
