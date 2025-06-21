@@ -24,7 +24,7 @@ cat > /etc/nginx/sites-available/gift-website << 'EOF'
 server {
     listen 80;
     server_name _;
-    root /var/www/gift-website/gift_website;
+    root /var/www/gift-website;
     index cover.html;
 
     # Handle static files

@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-button">← חזרה לקטלוג</a>
+    <a href="/index.html" class="back-button">← חזרה לקטלוג</a>
     <div class="gift-card">
         <div class="price-tag">₪650.00</div>
         <div class="availability ">במלאי</div>
@@ -85,7 +85,7 @@
         window.addEventListener('load', function() {
             const employeeId = localStorage.getItem('employeeId');
             if (!employeeId) {
-                window.location.href = 'cover.html';
+                window.location.href = '/cover.html';
                 return;
             }
         });
@@ -101,7 +101,7 @@
         function selectGift() {
             const employeeId = localStorage.getItem('employeeId');
             if (!employeeId) {
-                window.location.href = 'cover.html';
+                window.location.href = '/cover.html';
                 return;
             }
 
@@ -142,7 +142,7 @@
                     
                     // Redirect to selection page after delay
                     setTimeout(() => {
-                        window.location.href = 'selection.html';
+                        window.location.href = '/selection.html';
                     }, 2000);
                 } else {
                     throw new Error(data.error || 'Unknown error');
@@ -160,7 +160,7 @@
                 
                 // Redirect to selection page after delay
                 setTimeout(() => {
-                    window.location.href = 'selection.html';
+                    window.location.href = '/selection.html';
                 }, 2000);
             });
         }

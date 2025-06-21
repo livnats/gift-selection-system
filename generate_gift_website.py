@@ -44,7 +44,7 @@ class GiftWebsiteGenerator:
             print(f"Error loading CSV file: {e}")
             raise
 
-    def generate_website(self, output_dir="gift_website"):
+    def generate_website(self, output_dir="."):
         """Generate the complete website"""
         os.makedirs(output_dir, exist_ok=True)
         
@@ -186,7 +186,7 @@ class GiftWebsiteGenerator:
             availability_class = "out-of-stock" if "לא במלאי" in gift['availability'] else ""
             
             html += f"""
-        <div class="catalog-item" onclick="window.location.href='gift_{gift['id']}.html'">
+        <div class="catalog-item" onclick="window.location.href='/gift_{gift['id']}.html'">
             <div class="catalog-item-header">
                 <h2 class="catalog-item-title">{gift['name']}</h2>
                 <p class="catalog-item-subtitle">{gift['subtitle']}</p>
@@ -198,7 +198,7 @@ class GiftWebsiteGenerator:
                     <div class="catalog-item-price">{gift['price']}</div>
                     <div class="catalog-item-availability {availability_class}">{gift['availability']}</div>
                 </div>
-                <a href="gift_{gift['id']}.html" class="view-details-btn">צפה בפרטים מלאים</a>
+                <a href="/gift_{gift['id']}.html" class="view-details-btn">צפה בפרטים מלאים</a>
             </div>
         </div>"""
         
@@ -228,7 +228,7 @@ class GiftWebsiteGenerator:
         function logout() {
             localStorage.removeItem('employeeId');
             localStorage.removeItem('selectedGift');
-            window.location.href = 'cover.html';
+            window.location.href = '/cover.html';
         }
 
         document.querySelectorAll('.catalog-item').forEach(item => {
@@ -329,7 +329,7 @@ class GiftWebsiteGenerator:
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-button">← חזרה לקטלוג</a>
+    <a href="/index.html" class="back-button">← חזרה לקטלוג</a>
     <div class="gift-card">
         <div class="price-tag">{gift['price']}</div>
         <div class="availability {availability_class}">{gift['availability']}</div>
@@ -356,7 +356,7 @@ class GiftWebsiteGenerator:
         window.addEventListener('load', function() {{
             const employeeId = localStorage.getItem('employeeId');
             if (!employeeId) {{
-                window.location.href = 'cover.html';
+                window.location.href = '/cover.html';
                 return;
             }}
         }});
@@ -372,7 +372,7 @@ class GiftWebsiteGenerator:
         function selectGift() {{
             const employeeId = localStorage.getItem('employeeId');
             if (!employeeId) {{
-                window.location.href = 'cover.html';
+                window.location.href = '/cover.html';
                 return;
             }}
 
@@ -413,7 +413,7 @@ class GiftWebsiteGenerator:
                     
                     // Redirect to selection page after delay
                     setTimeout(() => {{
-                        window.location.href = 'selection.html';
+                        window.location.href = '/selection.html';
                     }}, 2000);
                 }} else {{
                     throw new Error(data.error || 'Unknown error');
@@ -431,7 +431,7 @@ class GiftWebsiteGenerator:
                 
                 // Redirect to selection page after delay
                 setTimeout(() => {{
-                    window.location.href = 'selection.html';
+                    window.location.href = '/selection.html';
                 }}, 2000);
             }});
         }}
@@ -502,7 +502,7 @@ class GiftWebsiteGenerator:
         function checkAuth() {
             const employeeId = localStorage.getItem('employeeId');
             if (!employeeId) {
-                window.location.href = 'cover.html';
+                window.location.href = '/cover.html';
                 return;
             }
         }
@@ -543,7 +543,7 @@ class GiftWebsiteGenerator:
                             </div>
                         </div>
                         <div class="actions">
-                            <a href="index.html" class="btn btn-primary">חזרה לקטלוג</a>
+                            <a href="/index.html" class="btn btn-primary">לך לקטלוג</a>
                             <a href="#" class="btn btn-secondary" onclick="changeSelection()">שנה בחירה</a>
                         </div>
                     </div>
@@ -559,7 +559,7 @@ class GiftWebsiteGenerator:
                     <h2>לא נבחרה מתנה עדיין</h2>
                     <p>עדיין לא בחרתם מתנה מהקטלוג</p>
                     <div class="actions" style="justify-content: center; margin-top: 20px;">
-                        <a href="index.html" class="btn btn-primary">לך לקטלוג</a>
+                        <a href="/index.html" class="btn btn-primary">לך לקטלוג</a>
                     </div>
                 </div>
             `;
@@ -567,13 +567,13 @@ class GiftWebsiteGenerator:
 
         function changeSelection() {
             localStorage.removeItem('selectedGift');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
 
         function logout() {
             localStorage.removeItem('employeeId');
             localStorage.removeItem('selectedGift');
-            window.location.href = 'cover.html';
+            window.location.href = '/cover.html';
         }
     </script>
 </body>

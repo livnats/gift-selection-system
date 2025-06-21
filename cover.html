@@ -123,13 +123,13 @@
             }
             // Store employee ID in localStorage
             localStorage.setItem('employeeId', employeeId);
-            // Redirect to catalog page
-            window.location.href = 'index.html';
+            // Redirect to catalog page using absolute path
+            window.location.href = '/index.html';
         });
         // If already have employeeId, skip to catalog
         window.addEventListener('load', function() {
             if (localStorage.getItem('employeeId')) {
-                window.location.href = 'index.html';
+                window.location.href = '/index.html';
             }
         });
     </script>

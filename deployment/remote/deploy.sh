@@ -55,7 +55,6 @@ else
 fi
 
 # Copy public key to the expected location
-cp ssh/gift-website-key.pub ssh/gift-website-key.pub
 chmod 600 ssh/gift-website-key
 chmod 644 ssh/gift-website-key.pub
 
@@ -101,26 +100,22 @@ sleep 60
 
 # Upload application files
 print_status "Uploading application files..."
-if [ -d "gift_website" ]; then
-    scp -i ssh/gift-website-key -o StrictHostKeyChecking=no -r gift_website/* ubuntu@$PUBLIC_IP:/var/www/gift-website/gift_website/
-    
-    # Upload other necessary files
-    scp -i ssh/gift-website-key -o StrictHostKeyChecking=no \
-        backend.py \
-        generate_gift_website.py \
-        gifts-catalog.csv \
-        requirements.txt \
-        cover.html \
-        admin.html \
-        gift-card-template.html \
-        export_selections.py \
-        README.md \
-        ubuntu@$PUBLIC_IP:/var/www/gift-website/
-    
-    print_success "Application files uploaded"
-else
-    print_warning "gift_website directory not found. Please generate the website first."
-fi
+
+# Ensure remote directory exists
+print_status "Creating remote directory structure..."
+ssh -i ssh/gift-website-key -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP "sudo mkdir -p /var/www/gift-website && sudo chown -R ubuntu:ubuntu /var/www/gift-website"
+
+# Upload necessary files
+scp -i ssh/gift-website-key -o StrictHostKeyChecking=no \
+    ../../backend.py \
+    ../../generate_gift_website.py \
+    ../../gifts-catalog.csv \
+    ../../requirements.txt \
+    ../../cover.html \
+    ../../admin.html \
+    ubuntu@$PUBLIC_IP:/var/www/gift-website/
+
+print_success "Application files uploaded"
 
 # Deploy the application
 print_status "Deploying application..."
