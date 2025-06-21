@@ -4,6 +4,9 @@ set -e
 echo "🎁 Gift Selection System - Remote Build & Deploy"
 echo "================================================"
 
+# Change to project root directory
+cd "$(dirname "$0")/../.."
+
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
     echo "❌ Virtual environment not found. Please run: python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
@@ -40,13 +43,14 @@ fi
 echo "✅ Production files generated successfully with relative URLs"
 
 # Check if deploy script exists
-if [ ! -f "deploy.sh" ]; then
+if [ ! -f "deployment/remote/deploy.sh" ]; then
     echo "❌ deploy.sh not found!"
     exit 1
 fi
 
 # Deploy to AWS
 echo "🚀 Deploying to AWS..."
+cd deployment/remote
 ./deploy.sh
 
 echo "✅ Remote build and deployment completed successfully!"
