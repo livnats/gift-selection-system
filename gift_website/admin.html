@@ -108,7 +108,7 @@
             error.style.display = 'none';
             stats.style.display = 'none';
 
-            fetch('http://localhost:5000/api/aggregate')
+            fetch('/api/aggregate')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -119,7 +119,7 @@
                 })
                 .catch(err => {
                     console.error('Error loading data:', err);
-                    error.textContent = 'שגיאה בטעינת הנתונים. ודאו שהשרת פועל על http://localhost:5000';
+                    error.textContent = 'שגיאה בטעינת הנתונים. ודאו שהשרת פועל';
                     error.style.display = 'block';
                     loading.style.display = 'none';
                 });
@@ -137,7 +137,7 @@
             loading.textContent = 'מאפס בחירות...';
             error.style.display = 'none';
 
-            fetch('http://localhost:5000/api/reset-selections', {
+            fetch('/api/reset-selections', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -154,7 +154,7 @@
             })
             .catch(err => {
                 console.error('Error resetting selections:', err);
-                error.textContent = 'שגיאה באיפוס הבחירות. ודאו שהשרת פועל על http://localhost:5000';
+                error.textContent = 'שגיאה באיפוס הבחירות. ודאו שהשרת פועל';
                 error.style.display = 'block';
                 loading.style.display = 'none';
             })

@@ -58,4 +58,18 @@ Thumbs.db
 
 # Backend data files (runtime data)
 gift_selections_backend.json
-gift_selections.csv 
+gift_selections.csv
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# SSH Keys (security)
+ssh/
+*.pem
+*.key
+
+# Deployment info
+deployment_info.json 
