@@ -108,7 +108,7 @@
             error.style.display = 'none';
             stats.style.display = 'none';
 
-            fetch('http://localhost:5000/api/aggregate')
+            fetch('/api/aggregate')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -137,7 +137,7 @@
             loading.textContent = 'מאפס בחירות...';
             error.style.display = 'none';
 
-            fetch('http://localhost:5000/api/reset-selections', {
+            fetch('/api/reset-selections', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

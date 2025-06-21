@@ -40,6 +40,12 @@ galtex/
 ├── admin.html                    # Admin dashboard
 ├── requirements.txt              # Python dependencies
 ├── gifts-catalog.csv            # Gift catalog data
+├── run_remote_build.sh          # Complete build and deploy script
+├── deploy.sh                    # AWS deployment script
+├── main.tf                      # Terraform infrastructure
+├── variables.tf                  # Terraform variables
+├── outputs.tf                    # Terraform outputs
+├── user_data.sh                 # EC2 instance setup
 ├── gift_website/                # Generated website files
 │   ├── cover.html              # Employee ID entry page
 │   ├── index.html              # Main catalog page
@@ -93,6 +99,54 @@ python3 -m http.server 8001
 2. Enter employee ID
 3. Browse and select gifts
 4. View admin dashboard at `http://localhost:8001/admin.html`
+
+## 🚀 Deployment to AWS
+
+### Prerequisites
+- AWS account with appropriate permissions
+- Terraform installed
+- SSH key pair for EC2 access
+
+### Quick Deployment
+```bash
+# Run the complete build and deploy process
+./run_remote_build.sh
+```
+
+This script will:
+1. ✅ Generate production HTML files with relative URLs
+2. ✅ Verify no localhost references in generated files
+3. ✅ Deploy infrastructure using Terraform
+4. ✅ Upload application files to AWS EC2
+5. ✅ Start backend and nginx services
+
+### Manual Deployment Steps
+If you prefer to run steps manually:
+
+```bash
+# 1. Generate production files
+source venv/bin/activate
+python3 generate_gift_website.py
+
+# 2. Verify no localhost references
+grep -r "localhost:" gift_website/*.html || echo "✅ No localhost references found"
+
+# 3. Deploy to AWS
+./deploy.sh
+```
+
+### Deployment Files
+- `run_remote_build.sh` - Complete build and deploy script
+- `deploy.sh` - AWS deployment script
+- `main.tf` - Terraform infrastructure configuration
+- `user_data.sh` - EC2 instance setup script
+
+### Access Deployed Application
+- **Main Website**: `http://[EC2-PUBLIC-IP]/cover.html`
+- **Admin Dashboard**: `http://[EC2-PUBLIC-IP]/admin.html`
+- **Backend API**: `http://[EC2-PUBLIC-IP]/api/health`
+
+For detailed deployment instructions, see [README_TERRAFORM.md](README_TERRAFORM.md).
 
 ## 📋 CSV Catalog Format
 

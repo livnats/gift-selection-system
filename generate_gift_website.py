@@ -378,7 +378,7 @@ class GiftWebsiteGenerator:
 
             const giftData = {{
                 giftId: '{gift['id']}',
-                giftName: '{gift['name']}',
+                giftName: {json.dumps(gift['name'])},
                 giftPrice: '{gift['price']}',
                 employeeId: employeeId,
                 selectionTime: new Date().toISOString()
@@ -390,7 +390,7 @@ class GiftWebsiteGenerator:
             selectBtn.textContent = 'שולח...';
 
             // Send to backend service
-            fetch('http://localhost:5000/api/select-gift', {{
+            fetch('/api/select-gift', {{
                 method: 'POST',
                 headers: {{
                     'Content-Type': 'application/json',

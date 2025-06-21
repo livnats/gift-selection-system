@@ -107,7 +107,7 @@
 
             const giftData = {
                 giftId: '5',
-                giftName: 'מיטת מסאז' מקצועית',
+                giftName: "\u05de\u05d9\u05d8\u05ea \u05de\u05e1\u05d0\u05d6' \u05de\u05e7\u05e6\u05d5\u05e2\u05d9\u05ea",
                 giftPrice: '₪650.00',
                 employeeId: employeeId,
                 selectionTime: new Date().toISOString()
@@ -119,7 +119,7 @@
             selectBtn.textContent = 'שולח...';
 
             // Send to backend service
-            fetch('http://localhost:5000/api/select-gift', {
+            fetch('/api/select-gift', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

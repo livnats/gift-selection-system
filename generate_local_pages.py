@@ -5,6 +5,7 @@ Generate local versions of gift pages with correct backend URL
 
 import os
 import re
+import json
 
 def update_gift_page_for_local(file_path):
     """Update a gift page to use localhost:5000 for API calls"""
@@ -15,6 +16,14 @@ def update_gift_page_for_local(file_path):
     content = re.sub(
         r"fetch\('/api/",
         "fetch('http://localhost:5000/api/",
+        content
+    )
+    
+    # Fix giftName strings that might have escaping issues
+    # Look for patterns like giftName: 'string with apostrophes'
+    content = re.sub(
+        r"giftName:\s*'([^']*(?:'[^']*)*)'",
+        lambda m: f"giftName: {json.dumps(m.group(1))}",
         content
     )
     
