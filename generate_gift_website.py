@@ -25,7 +25,7 @@ class GiftWebsiteGenerator:
                     photos = []
                     for i in range(1, 5):  # photo1 to photo4
                         photo_key = f'photo{i}'
-                        if photo_key in row and row[photo_key].strip():
+                        if photo_key in row and row[photo_key] and row[photo_key].strip():
                             photos.append(row[photo_key].strip())
                     
                     gift = {
