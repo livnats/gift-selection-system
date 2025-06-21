@@ -36,20 +36,23 @@ A complete gift catalog website generator with employee ID tracking and gift sel
 galtex/
 ├── backend.py
 ├── generate_gift_website.py
-├── generate_local_pages.py
 ├── gifts-catalog.csv
 ├── requirements.txt
 ├── gift_website/
 ├── venv/
 ├── deployment/
-│   ├── run_remote_build.sh
-│   ├── deploy.sh
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── user_data.sh
-│   ├── DEPLOYMENT_WORKFLOW.md
-│   └── README_TERRAFORM.md
+│   ├── local/
+│   │   ├── run_local.sh
+│   │   └── generate_local_pages.py
+│   └── remote/
+│       ├── run_remote_build.sh
+│       ├── deploy.sh
+│       ├── main.tf
+│       ├── variables.tf
+│       ├── outputs.tf
+│       ├── user_data.sh
+│       ├── DEPLOYMENT_WORKFLOW.md
+│       └── README_TERRAFORM.md
 └── README.md
 ```
 
@@ -68,33 +71,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Start Backend Service
+### 2. Local Development
 ```bash
-# Activate virtual environment (if not already active)
-source venv/bin/activate
-
-# Start the backend server
-python3 backend.py
+# Run local development environment
+./deployment/local/run_local.sh
 ```
 
-The backend will start on `http://localhost:5000`
+This will:
+- Generate local HTML files with localhost URLs
+- Start backend server on port 5000
+- Start frontend server on port 8000
 
-### 3. Generate Website
-```bash
-python3 generate_gift_website.py
-```
-
-### 4. Serve Website
-```bash
-cd gift_website
-python3 -m http.server 8001
-```
-
-### 5. Access the Website
-1. Open `http://localhost:8001/cover.html` in your browser
+### 3. Access Local Website
+1. Open `http://localhost:8000/cover.html` in your browser
 2. Enter employee ID
 3. Browse and select gifts
-4. View admin dashboard at `http://localhost:8001/admin.html`
+4. View admin dashboard at `http://localhost:8000/admin.html`
 
 ## 🚀 Deployment to AWS
 
@@ -106,7 +98,7 @@ python3 -m http.server 8001
 ### Quick Deployment
 ```bash
 # Run the complete build and deploy process
-./deployment/run_remote_build.sh
+./deployment/remote/run_remote_build.sh
 ```
 
 This script will:
@@ -128,21 +120,21 @@ python3 generate_gift_website.py
 grep -r "localhost:" gift_website/*.html || echo "✅ No localhost references found"
 
 # 3. Deploy to AWS
-./deployment/deploy.sh
+./deployment/remote/deploy.sh
 ```
 
 ### Deployment Files
-- `deployment/run_remote_build.sh` - Complete build and deploy script
-- `deployment/deploy.sh` - AWS deployment script
-- `deployment/main.tf` - Terraform infrastructure configuration
-- `deployment/user_data.sh` - EC2 instance setup script
+- `deployment/remote/run_remote_build.sh` - Complete build and deploy script
+- `deployment/remote/deploy.sh` - AWS deployment script
+- `deployment/remote/main.tf` - Terraform infrastructure configuration
+- `deployment/remote/user_data.sh` - EC2 instance setup script
 
 ### Access Deployed Application
 - **Main Website**: `http://[EC2-PUBLIC-IP]/cover.html`
 - **Admin Dashboard**: `http://[EC2-PUBLIC-IP]/admin.html`
 - **Backend API**: `http://[EC2-PUBLIC-IP]/api/health`
 
-For detailed deployment instructions, see [deployment/README_TERRAFORM.md](deployment/README_TERRAFORM.md).
+For detailed deployment instructions, see [deployment/remote/README_TERRAFORM.md](deployment/remote/README_TERRAFORM.md).
 
 ## 📋 CSV Catalog Format
 
