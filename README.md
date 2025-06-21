@@ -34,27 +34,23 @@ A complete gift catalog website generator with employee ID tracking and gift sel
 
 ```
 galtex/
-├── cover.html                    # Employee ID entry page
-├── generate_gift_website.py      # Main website generator
-├── backend.py                    # Flask backend service
-├── admin.html                    # Admin dashboard
-├── requirements.txt              # Python dependencies
-├── gifts-catalog.csv            # Gift catalog data
-├── run_remote_build.sh          # Complete build and deploy script
-├── deploy.sh                    # AWS deployment script
-├── main.tf                      # Terraform infrastructure
-├── variables.tf                  # Terraform variables
-├── outputs.tf                    # Terraform outputs
-├── user_data.sh                 # EC2 instance setup
-├── gift_website/                # Generated website files
-│   ├── cover.html              # Employee ID entry page
-│   ├── index.html              # Main catalog page
-│   ├── gift_1.html             # Individual gift pages
-│   ├── gift_2.html
-│   ├── gift_3.html
-│   └── selection.html          # Selection tracking page
-├── .gitignore                   # Git ignore file
-└── README.md                   # This file
+├── backend.py
+├── generate_gift_website.py
+├── generate_local_pages.py
+├── gifts-catalog.csv
+├── requirements.txt
+├── gift_website/
+├── venv/
+├── deployment/
+│   ├── run_remote_build.sh
+│   ├── deploy.sh
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── user_data.sh
+│   ├── DEPLOYMENT_WORKFLOW.md
+│   └── README_TERRAFORM.md
+└── README.md
 ```
 
 ## 🚀 Quick Start
@@ -110,7 +106,7 @@ python3 -m http.server 8001
 ### Quick Deployment
 ```bash
 # Run the complete build and deploy process
-./run_remote_build.sh
+./deployment/run_remote_build.sh
 ```
 
 This script will:
@@ -132,21 +128,21 @@ python3 generate_gift_website.py
 grep -r "localhost:" gift_website/*.html || echo "✅ No localhost references found"
 
 # 3. Deploy to AWS
-./deploy.sh
+./deployment/deploy.sh
 ```
 
 ### Deployment Files
-- `run_remote_build.sh` - Complete build and deploy script
-- `deploy.sh` - AWS deployment script
-- `main.tf` - Terraform infrastructure configuration
-- `user_data.sh` - EC2 instance setup script
+- `deployment/run_remote_build.sh` - Complete build and deploy script
+- `deployment/deploy.sh` - AWS deployment script
+- `deployment/main.tf` - Terraform infrastructure configuration
+- `deployment/user_data.sh` - EC2 instance setup script
 
 ### Access Deployed Application
 - **Main Website**: `http://[EC2-PUBLIC-IP]/cover.html`
 - **Admin Dashboard**: `http://[EC2-PUBLIC-IP]/admin.html`
 - **Backend API**: `http://[EC2-PUBLIC-IP]/api/health`
 
-For detailed deployment instructions, see [README_TERRAFORM.md](README_TERRAFORM.md).
+For detailed deployment instructions, see [deployment/README_TERRAFORM.md](deployment/README_TERRAFORM.md).
 
 ## 📋 CSV Catalog Format
 
